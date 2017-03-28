@@ -1,6 +1,7 @@
 from random import randint
 from random import shuffle
 
+
 def valores (val):
     if val=='A':
         return 1
