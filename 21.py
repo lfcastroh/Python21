@@ -1,38 +1,7 @@
 from random import randint
 from random import shuffle
 
-def dimensionpalos(lista):
-        if lista==[]:
-                return 0
-        else:
-                return 1 + dimensionpalos(lista[1:])
-    
-def palos (lista):
-        if dimensionpalos(lista)<48:
-                if lista==[]:
-                        lista.append('A')
-                        return palos(lista)
-                elif lista[-1]=='A':
-                        lista.append('2')
-                        return palos(lista)
-                elif lista[-1]=='9':
-                        lista.append('J')
-                        return palos(lista)
-                elif lista[-1]=='J':
-                        lista.append('Q')
-                        return palos(lista)
-                elif lista[-1]=='Q':
-                        lista.append('K')
-                        return palos(lista)
-                elif lista[-1]=='K':
-                        lista.append('A')
-                        return palos(lista)
-                elif int(lista[-1])<9:
-                        lista.append(str(int(lista[-1])+1))
-                        return palos(lista)
-        else:
-                return lista
-def valor (val):
+def valores (val):
     if val=='A':
         return 1
     elif val=='2':
@@ -54,16 +23,49 @@ def valor (val):
     elif val=='J'or val=='K'or val=='Q':
         return 10
     
-def cartas(num,lista,s):
+def valoresEspeciales (lista):
+        if dimensionLista(lista)<48:
+                if lista==[]:
+                        lista.append('A')
+                        return valoresEspeciales(lista)
+                elif lista[-1]=='A':
+                        lista.append('2')
+                        return valoresEspeciales(lista)
+                elif lista[-1]=='9':
+                        lista.append('J')
+                        return valoresEspeciales(lista)
+                elif lista[-1]=='J':
+                        lista.append('Q')
+                        return valoresEspeciales(lista)
+                elif lista[-1]=='Q':
+                        lista.append('K')
+                        return valoresEspeciales(lista)
+                elif lista[-1]=='K':
+                        lista.append('A')
+                        return valoresEspeciales(lista)
+                elif int(lista[-1])<9:
+                        lista.append(str(int(lista[-1])+1))
+                        return valoresEspeciales(lista)
+        else:
+                return lista
+            
+def dimensionLista(lista):
+        if lista==[]:
+                return 0
+        else:
+                return 1 + dimensionLista(lista[1:])
+    
+
+def repartirCartas(num,lista,s):
         if num==21:
                 return num
         if num==-1:
                 return -1 
         elif num<21:
-                print ("mas cartas ?")
-                if raw_input()=="n":
-                        print ("CPU jugando")
-                        if cartascpu(0,num,lista)==0:
+                print ("\nInserte 'SI' para recibir mas cartas y 'NO' para plantarse?")
+                if raw_input()=="NO":
+                        print ("\nTURNO DEL CPU")
+                        if turnoCPU(0,num,lista)==0:
                                 return -1
                         else:
                                 return num
@@ -71,21 +73,30 @@ def cartas(num,lista,s):
                     shuffle(lista)
                     if lista[0]=='A':
                         if num+11>21:
-                            print ("nueva carta : ",lista[0]," suma de cartas: ",num+valor(lista[0]))
-                            return cartas(num+valor(lista[0]),lista,s)
+                            print("\nNueva Carta: ")
+                            print lista[0]
+                            print ("Total de Cartas:")
+                            print num+valores(lista[0])
+                            return repartirCartas(num+valores(lista[0]),lista,s)
                         else:
-                            print ("nueva carta : ",lista[0]," suma de cartas: ",num+11)
-                            return cartas(num+11,lista,s+1)
-                    print ("nueva carta : ",lista[0]," suma de cartas: ",num+valor(lista[0]))
-                    return cartas(num+valor(lista[0]),lista,s)
+                            print("\nNueva Carta: ")
+                            print lista[0]
+                            print ("Total de Cartas:")
+                            print num+valores(lista[0])
+                            return repartirCartas(num+11,lista,s+1)
+                    print("\nNueva Carta: ")
+                    print lista[0]
+                    print ("Total de Cartas:")
+                    print num+valores(lista[0])
+                    return repartirCartas(num+valores(lista[0]),lista,s)
         elif num>21&s==0:
                 return -1
         elif num>21&s>0:
                  print ("A reducida : Nueva suma de cartas = ",num-10)
-                 return cartas(num-10,lista,s-1)
+                 return repartirCartas(num-10,lista,s-1)
             
     
-def cartascpu(num,user,lista):
+def turnoCPU(num,user,lista):
         if (num<21)&(num>user):
                 return 0
         if num==21:
@@ -94,17 +105,20 @@ def cartascpu(num,user,lista):
                 return 1
         if num<21:
                 shuffle(lista)
-                print ("nueva carta : ",lista[0]," suma de cartas: ",num+valor(lista[0]))
-                return cartascpu(num+valor(lista[0]),user,lista)
+                print("\nNueva Carta: ")
+                print lista[0]
+                print ("Total de Cartas:")
+                print num+valores(lista[0])
+                return turnoCPU(num+valores(lista[0]),user,lista)
 
+def main():
+    print ("JUEGO DE 21")
+    print ("\nTURNO DEL JUGADOR")
+    print ("\nInserte 'SI' para recibir mas cartas y 'NO' para plantarse")
 
-#inicio del programa
-
-    
-print ("juego de cartas 21")
-print ("\nuse 'y' para mas cartas y 'n' para no recibir mas cartas")
-
-if cartas(0,palos (lista=[]),0)==(-1):
-    print("\nHa perdido!!!!")
-else:
-    print("\nHa ganado!!!!")
+    if repartirCartas(0,valoresEspeciales(lista=[]),0)==(-1):
+        print("\nHAS PERDIDO!")
+    else:
+        print("\nHAS GANADO!")
+if __name__ == "__main__":
+    main()
